@@ -13,8 +13,8 @@ class UserAuthController extends Controller
             'username'=>'required|string',
             'email'=>'required|string|email|unique:users',
             'password'=>'required|min:8',
-            'phone_number'=>'nullable|string', // Added phone_number field
-            'address'=>'nullable|string', // Added address field
+            'phone_number'=>'nullable|string', 
+            'address'=>'nullable|string', 
         ]);
     
         // Create a new user with the provided data
@@ -22,8 +22,8 @@ class UserAuthController extends Controller
             'username' => $registerUserData['username'],
             'email' => $registerUserData['email'],
             'password' => Hash::make($registerUserData['password']),
-            'phone_number' => $registerUserData['phone_number'], // Assign phone_number field
-            'address' => $registerUserData['address'], // Assign address field
+            'phone_number' => $registerUserData['phone_number'],
+            'address' => $registerUserData['address'], 
         ]);
     
         return response()->json([
