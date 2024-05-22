@@ -12,7 +12,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->timestamp('payment_date');
             $table->decimal('amount', 10, 2);
-            $table->enum('payment_method', ['credit_card', 'paypal', 'bank_transfer']);
+            $table->enum('payment_method', ['credit_card', 'paypal', 'bank_transfer', 'gcash']);
             $table->timestamps();
         });
     }
