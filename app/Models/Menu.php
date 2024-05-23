@@ -14,9 +14,13 @@ class Menu extends Model
     protected $fillable = [
         'name',
         'description',
-        'category',
         'price',
-        'image_url',
         'is_available',
     ];
+
+    
+    public function getPriceAttribute($value)
+    {
+        return '₱' . number_format($value, 2);
+    }
 }

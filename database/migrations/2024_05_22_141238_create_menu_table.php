@@ -10,11 +10,8 @@ class CreateMenuTable extends Migration
     {
         Schema::create('menu', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->string('category')->nullable();
+            $table->string('name')->unique();
             $table->decimal('price', 10, 2);
-            $table->string('image_url')->nullable();
             $table->boolean('is_available')->default(true);
             $table->timestamps();
         });

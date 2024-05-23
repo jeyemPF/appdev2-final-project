@@ -9,17 +9,18 @@ class MenuController extends Controller
 {
     public function index()
     {
-        return Menu::all();
+        // Retrieve 20 random menu items
+        $menuItems = Menu::inRandomOrder()->limit(20)->get();
+
+        // Return the menu items as a JSON response
+        return response()->json($menuItems);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category' => 'nullable|string',
             'price' => 'required|numeric',
-            'image_url' => 'nullable|string',
             'is_available' => 'boolean',
         ]);
 
@@ -37,10 +38,7 @@ class MenuController extends Controller
     {
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'category' => 'nullable|string',
             'price' => 'sometimes|required|numeric',
-            'image_url' => 'nullable|string',
             'is_available' => 'boolean',
         ]);
 
