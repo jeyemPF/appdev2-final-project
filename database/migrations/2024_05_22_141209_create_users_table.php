@@ -17,24 +17,13 @@ class CreateUsersTable extends Migration
             $table->text('address')->nullable();
             $table->timestamps();
         });
-
-        // Create personal_access_tokens table
-        Schema::create('personal_access_tokens', function (Blueprint $table) {
-            $table->id();
-            $table->morphs('tokenable');
-            $table->string('name');
-            $table->string('token', 64)->unique();
-            $table->text('abilities')->nullable();
-            $table->timestamp('expires_at')->nullable();
-            $table->timestamps();
-        });
     }
 
     public function down()
     {
         // Drop personal_access_tokens table
         Schema::dropIfExists('personal_access_tokens');
-
         Schema::dropIfExists('users');
     }
 }
+
