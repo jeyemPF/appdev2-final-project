@@ -11,16 +11,20 @@ class Menu extends Model
 
     protected $table = 'menu';
 
-    protected $fillable = [
-        'name',
-        'description',
-        'price',
-        'is_available',
-    ];
+    protected $fillable = ['name', 'price', 'is_available'];
+// Menu.php
+
+public function getPriceAttribute($value)
+{
+    return $value; 
+}
+
+public function orderItems()
+{
+    return $this->hasMany(OrderItem::class, 'items_id');
+}
 
     
-    public function getPriceAttribute($value)
-    {
-        return '₱' . number_format($value, 2);
-    }
+
+    
 }

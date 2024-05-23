@@ -17,7 +17,7 @@ class MenuFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->randomElement([
+            'name' => $this->faker->unique()->randomElement([
                 "Tapasilog",
                 "Sisiglog",
                 "Kawali Silog",
@@ -37,9 +37,9 @@ class MenuFactory extends Factory
                 "Spamsilog",  
                 "Tunaslog",  
                 "Embutidosilog",    
-                "Baconsilog" 
+                "Baconsilog"
             ]),
-            'price' => $this->faker->randomFloat(2, 5, 20), 
+            'price' => $this->faker->randomFloat(2, 90, 150),
             'is_available' => $this->faker->boolean,
         ];
     }

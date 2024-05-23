@@ -7,75 +7,54 @@ use App\Models\OrderItem;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function placeOrder(Request $request)
     {
-        return Order::with('orderItems.menu')->get();
-    }
-
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
+        $request->validate([
             'items' => 'required|array',
             'items.*.menu_id' => 'required|exists:menu,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $totalAmount = 0;
+        $user = Auth::user();
 
+        // Create the order
         $order = Order::create([
-            'user_id' => auth()->id(),
-            'total_amount' => 0,
+            'user_id' => $user->id,
+            'total_amount' => 0, 
             'status' => 'pending',
         ]);
 
-        foreach ($validatedData['items'] as $item) {
-            $menu = Menu::findOrFail($item['menu_id']);
-            $quantity = (int) $item['quantity'];
-            $unitPrice = (float) $menu->price;
+        $totalAmount = 0;
+
+        // Create order items
+        foreach ($request->items as $item) {
+            $menu = Menu::find($item['menu_id']);
+            $unitPrice = $menu->price;
+            $quantity = (int) $item['quantity']; // Cast to integer
+            
+            $totalItemPrice = $unitPrice * $quantity;
+
 
             OrderItem::create([
-                'order_id' => $order->id,
                 'items_id' => $menu->id,
+                'order_id' => $order->id,
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
             ]);
 
-            $totalAmount += $quantity * $unitPrice;
+            $totalAmount += $totalItemPrice;
         }
 
-        // Update the total amount after all items are added
+        // Update the total amount of the order
         $order->update(['total_amount' => $totalAmount]);
 
-        return response()->json($order, 201);
-    }
-
-    public function show($id)
-    {
-        return Order::with('orderItems.menu')->findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $order = Order::findOrFail($id);
-
-        $request->validate([
-            'status' => 'required|in:pending,completed,canceled',
-        ]);
-
-        $order->update(['status' => $request->status]);
-
-        return response()->json(['message' => 'Order updated successfully']);
-    }
-
-    public function destroy($id)
-    {
-        $order = Order::findOrFail($id);
-        $order->delete();
-
-        return response()->json(['message' => 'Order deleted successfully']);
+        return response()->json([
+            'message' => 'Order placed successfully',
+            'order' => $order,
+            'order_items' => $order->orderItems,
+        ], 201);
     }
 }
