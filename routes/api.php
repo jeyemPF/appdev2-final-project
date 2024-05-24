@@ -25,10 +25,10 @@ Route::post('logout', [UserAuthController::class, 'logout'])->middleware('auth:s
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Route::apiResource('menus', MenuController::class);
-    // Route::apiResource('orders', OrderController::class)->except(['create', 'edit']);
-    // Route::post('payments', [PaymentController::class, 'store']);
-    // Route::get('users', [UserController::class,'getAllUsers']);
+    Route::apiResource('menus', MenuController::class);
+    Route::apiResource('orders', OrderController::class)->except(['create', 'edit']);
+    Route::post('payments', [PaymentController::class, 'store']);
+    Route::get('users', [UserController::class,'getAllUsers']);
     Route::post('orders/place', [OrderController::class, 'placeOrder']);
 });
 
