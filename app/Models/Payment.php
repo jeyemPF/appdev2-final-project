@@ -9,6 +9,7 @@ class Payment extends Model
 {
     use HasFactory;
 
+    // Specify the fillable attributes for mass assignment
     protected $fillable = [
         'payment_date',
         'amount',
@@ -16,6 +17,7 @@ class Payment extends Model
         'order_id',
     ];
 
+    // Define the relationship between Payment and Order models
     public function order()
     {
         return $this->belongsTo(Order::class);

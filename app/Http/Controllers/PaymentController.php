@@ -14,7 +14,7 @@ class PaymentController extends Controller
         $request->validate([
             'order_id' => 'required|exists:orders,id',
             'amount' => 'required|numeric|min:0.01',
-            'payment_method' => 'required|in:credit_card,p  aypal,bank_transfer,gcash',
+            'payment_method' => 'required|in:credit_card,paypal,bank_transfer,gcash',
         ]);
 
         $order = Order::findOrFail($request->order_id);
