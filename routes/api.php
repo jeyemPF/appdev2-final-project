@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('orders', OrderController::class)->except(['create', 'edit']);
     Route::post('payments', [PaymentController::class, 'store']);
     Route::get('users', [UserController::class,'getAllUsers']);
-    Route::post('orders/place', [OrderController::class, 'placeOrder']);
+    Route::post('orders', [OrderController::class, 'placeOrder']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

@@ -23,7 +23,15 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Payment cannot be processed for this order'], 400);
         }
 
+        // Check if the user has enough funds
+        if ($request->amount > $order->user->gold) {
+            // If not enough funds, cancel the order and return an error response
+            $order->update(['status' => 'canceled']);
+            return response()->json(['message' => 'Not enough cash to complete the payment. Order canceled.'], 400);
+        }
+
         DB::transaction(function () use ($request, $order) {
+            // Proceed with the payment
             Payment::create([
                 'order_id' => $order->id,
                 'payment_date' => now(),
@@ -32,6 +40,9 @@ class PaymentController extends Controller
             ]);
 
             $order->update(['status' => 'completed']);
+
+            // Deduct the amount from the user's gold
+            $order->user->decrement('gold', $request->amount);
         });
 
         return response()->json(['message' => 'Payment processed successfully']);
