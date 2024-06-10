@@ -11,6 +11,15 @@ class Order extends Model
 
     protected $fillable = ['user_id', 'total_amount', 'status'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($order) {
+            $order->orderItems()->delete();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

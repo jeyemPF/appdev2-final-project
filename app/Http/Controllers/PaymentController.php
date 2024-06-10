@@ -13,21 +13,15 @@ class PaymentController extends Controller
     {
         $request->validate([
             'order_id' => 'required|exists:orders,id',
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|min:0.01', // Numeric validation removed
             'payment_method' => 'required|in:credit_card,paypal,bank_transfer,gcash',
         ]);
 
         $order = Order::findOrFail($request->order_id);
 
+        // Check if the order status is 'pending'
         if ($order->status !== 'pending') {
-            return response()->json(['message' => 'Payment cannot be processed for this order'], 400);
-        }
-
-        // Check if the user has enough funds
-        if ($request->amount > $order->user->gold) {
-            // If not enough funds, cancel the order and return an error response
-            $order->update(['status' => 'canceled']);
-            return response()->json(['message' => 'Not enough cash to complete the payment. Order canceled.'], 400);
+            return response()->json(['message' => 'Payment cannot be processed for this order as it is not in pending status.'], 400);
         }
 
         DB::transaction(function () use ($request, $order) {
@@ -40,9 +34,6 @@ class PaymentController extends Controller
             ]);
 
             $order->update(['status' => 'completed']);
-
-            // Deduct the amount from the user's gold
-            $order->user->decrement('gold', $request->amount);
         });
 
         return response()->json(['message' => 'Payment processed successfully']);
